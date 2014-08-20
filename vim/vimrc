@@ -1,8 +1,8 @@
 "
 "	Phil's (@mrphilh) .vimrc file.
-"	
+"
 "	Various config settings stolen with love from:
-"	- https://github.com/nvie/vimrc 
+"	- https://github.com/nvie/vimrc
 "
 
 filetype off
@@ -21,7 +21,7 @@ set background=dark
 colorscheme vividchalk
 
 " Fish shell is not POSIX complaint
-set shell=bash  
+set shell=bash
 
 " if a given file type (perl, ruby, python, c, etc) has its own special auto-indentation rules, use them
 filetype plugin indent on
@@ -50,9 +50,10 @@ set hlsearch                    " highlight search terms
 set incsearch                   " show search matches as you type
 set gdefault                    " search/replace "globally" (on a line) by default
 
+set list
 set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
 
-set nolist                      " don't show invisible characters by default,
+"set nolist                      " don't show invisible characters by default,
                 				" but it is enabled for some file types (see
 			                    "   later)
 set pastetoggle=<F2>            " when in insert mode, press <F2> to go to
@@ -70,11 +71,18 @@ set nrformats=                  " make <C-a> and <C-x> play well with
                 				"    them octal or hex)
 set shortmess+=I                " hide the launch screen
 set clipboard=unnamed           " normal OS clipboard interaction
-				
+
 "Basic vim ninja training
 noremap <up> <nop>
 noremap <down> <nop>
 noremap <left> <nop>
 noremap <right> <nop>
-				
-				
+
+"Remap tasklist so it does not interfere with command-t
+map <leader>v <Plug>TaskList
+
+autocmd BufWritePre * :%s/\s\+$//e      "Remove trailing whitespace on save
+
+"Mark when I've gone over 80 character line lenght
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.*/
