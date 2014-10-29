@@ -19,3 +19,24 @@
 [submodule "vim/bundle/sparkup"]
 	path = vim/bundle/sparkup
 	url = https://github.com/rstacruz/sparkup.git
+[submodule "vim/bundle/Dockerfile"]
+	path = vim/bundle/Dockerfile
+	url = https://github.com/ekalinin/Dockerfile.vim.git
+[submodule "vim/bundle/airline"]
+	path = vim/bundle/airline
+	url = https://github.com/bling/vim-airline
+[submodule "vim/bundle/delimitMate"]
+	path = vim/bundle/delimitMate
+	url = https://github.com/Raimondi/delimitMate.git
+[submodule "vim/bundle/darkspectrum"]
+	path = vim/bundle/darkspectrum
+	url = https://github.com/vim-scripts/darkspectrum.git
+[submodule "vim/bundle/getafe"]
+	path = vim/bundle/getafe
+	url = https://github.com/larssmit/vim-getafe.git
+[submodule "vim/bundle/vim-vagrant"]
+	path = vim/bundle/vim-vagrant
+	url = git://github.com/markcornick/vim-vagrant.git
+[submodule "vim/bundle/thrift.vim"]
+	path = vim/bundle/thrift.vim
+	url = https://github.com/solarnz/thrift.vim.git

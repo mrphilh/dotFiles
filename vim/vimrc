@@ -7,6 +7,10 @@
 
 filetype off
 
+let os = substitute(system('uname'), '\n', '', '')
+if os == 'Darwin' || os == 'Mac'
+    let s:OS = 'osx'
+endif
 
 " enable pathogen
 execute pathogen#infect()
@@ -18,7 +22,7 @@ set nocompatible
 " turn on syntax highlighting
 syntax on
 set background=dark
-colorscheme vividchalk
+colorscheme getafe
 
 " Fish shell is not POSIX complaint
 set shell=bash
@@ -51,7 +55,7 @@ set incsearch                   " show search matches as you type
 set gdefault                    " search/replace "globally" (on a line) by default
 
 set list
-set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
+set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·,eol:¬
 
 "set nolist                      " don't show invisible characters by default,
                 				" but it is enabled for some file types (see
@@ -59,7 +63,7 @@ set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
 set pastetoggle=<F2>            " when in insert mode, press <F2> to go to
                 				"    paste mode, where you can paste mass data
 			                    "    that won't be autoindented
-set mouse=a                     " enable using the mouse if terminal emulator
+set mouse=v                     " enable using the mouse if terminal emulator
                 				"    supports it (xterm does)
 set fileformats="unix,dos,mac"
 set formatoptions+=1            " When wrapping paragraphs, don't end lines
@@ -78,10 +82,27 @@ noremap <down> <nop>
 noremap <left> <nop>
 noremap <right> <nop>
 
+"Remap window commands
+nmap <leader>s :split<CR>
+nmap <leader>vs :vsplit<CR>
+"Buffer commands
+"Create a new buffer
+nmap <leader>T :enew<CR>
+" Move to the next buffer
+nmap <leader>l :bnext<CR>
+" Move to the previous buffer
+nmap <leader>h :bprevious<CR>
+" Close the current buffer and move to the previous one
+" This replicates the idea of closing a tab
+nmap <leader>bq :bp <BAR> bd #<CR>
+" Show all open buffers and their status
+nmap <leader>bl :ls<CR>
+
+
 "Remap tasklist so it does not interfere with command-t
 map <leader>v <Plug>TaskList
 
-autocmd BufWritePre * :%s/\s\+$//e      "Remove trailing whitespace on save
+"autocmd BufWritePre * :%s/\s\+$//e      "Remove trailing whitespace on save
 
 "Mark when I've gone over 80 character line lenght
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
@@ -100,6 +121,37 @@ set statusline+=%5*\ %{&spelllang}\%{HighlightSearch()}\  "Spellanguage & Highli
 set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
 set statusline+=%9*\ col:%03c\                            "Colnr
 set statusline+=%0*\ \ %m%r%w\ %P\ \                      "Modified? Readonly? Top/bot.
+
+" Airline Config
+
+if has('gui_running')
+    " Who uses a GUI in GVim anyways? Let's be serious.
+    set guioptions=aegirLt
+
+    " Let's make the fonts look nice
+    if s:OS == 'osx'
+        set guifont=Droid\ Sans\ Mono\ for\ Powerline:h11
+    elseif s:OS == 'linux'
+        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
+    endif
+endif
+
+let g:airline_theme="powerlineish"
+
+" Enable Powerline fonts
+let g:airline_powerline_fonts = 1
+
+" Fix Broken symbols
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.space = "\ua0"
+
+" Enable buffer list across the top
+let g:airline#extensions#tabline#enabled = 1
+
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
 
 function! HighlightSearch()
   if &hls
