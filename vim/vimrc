@@ -76,6 +76,10 @@ set nrformats=                  " make <C-a> and <C-x> play well with
 set shortmess+=I                " hide the launch screen
 set clipboard=unnamed           " normal OS clipboard interaction
 
+" Command-T variables
+let g:CommandTFileScanner="find"
+let g:CommandTMaxFiles=1000000
+
 "Basic vim ninja training
 noremap <up> <nop>
 noremap <down> <nop>
@@ -98,7 +102,11 @@ nmap <leader>bq :bp <BAR> bd #<CR>
 " Show all open buffers and their status
 nmap <leader>bl :ls<CR>
 
-
+" Remap :tselect for easier tag jumping
+nmap <leader>] :tselect<CR>
+" Make it easier to close a buffer
+nmap <leader>q :bd<CR>
+"
 "Remap tasklist so it does not interfere with command-t
 map <leader>v <Plug>TaskList
 
