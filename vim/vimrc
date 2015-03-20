@@ -112,9 +112,9 @@ map <leader>v <Plug>TaskList
 
 "autocmd BufWritePre * :%s/\s\+$//e      "Remove trailing whitespace on save
 
-"Mark when I've gone over 80 character line lenght
+"Mark when I've gone over 100 character line lenght
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.*/
+match OverLength /\%101v.*/
 
 " Status Line config
 set laststatus=2
