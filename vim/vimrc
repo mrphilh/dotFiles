@@ -78,8 +78,9 @@ set clipboard=unnamed           " normal OS clipboard interaction
 
 " Command-T variables
 let g:CommandTFileScanner="find"
-let g:CommandTMaxFiles=1000000
-
+let g:CommandTMaxFiles=100000
+let g:CommandTMaxCacheDirectories=50
+set wildignore+=**/.git/*,.DS_Store,**/*.pyc,**/Cloud.build/*,*.obj,*.o
 "Basic vim ninja training
 noremap <up> <nop>
 noremap <down> <nop>
@@ -104,8 +105,8 @@ nmap <leader>bl :ls<CR>
 
 " Remap :tselect for easier tag jumping
 nmap <leader>] :tselect<CR>
-" Make it easier to close a buffer
-nmap <leader>q :bd<CR>
+" Make it easier to close a buffer and keep a split
+nmap <leader>q :BD<CR>
 "
 "Remap tasklist so it does not interfere with command-t
 map <leader>v <Plug>TaskList
@@ -129,6 +130,30 @@ set statusline+=%5*\ %{&spelllang}\%{HighlightSearch()}\  "Spellanguage & Highli
 set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
 set statusline+=%9*\ col:%03c\                            "Colnr
 set statusline+=%0*\ \ %m%r%w\ %P\ \                      "Modified? Readonly? Top/bot.
+
+" CSCOPE Confings
+    "Below is the minimum key mappings.
+"nnoremap <leader>fa :call cscope#findInteractive(expand('<cword>'))<CR>
+"nnoremap <leader>l :call ToggleLocationList()<CR>
+
+    "Some optional key mappings to search directly.
+
+" s: Find this C symbol
+"nnoremap  <leader>fs :call cscope#find('s', expand('<cword>'))<CR>
+" g: Find this definition
+"nnoremap  <leader>fg :call cscope#find('g', expand('<cword>'))<CR>
+" d: Find functions called by this function
+"nnoremap  <leader>fd :call cscope#find('d', expand('<cword>'))<CR>
+" c: Find functions calling this function
+"nnoremap  <leader>fc :call cscope#find('c', expand('<cword>'))<CR>
+" t: Find this text string
+"nnoremap  <leader>ft :call cscope#find('t', expand('<cword>'))<CR>
+"" e: Find this egrep pattern
+"nnoremap  <leader>fe :call cscope#find('e', expand('<cword>'))<CR>
+" f: Find this file
+"nnoremap  <leader>ff :call cscope#find('f', expand('<cword>'))<CR>
+" i: Find files #including this file
+"nnoremap  <leader>fi :call cscope#find('i', expand('<cword>'))<CR>
 
 " Airline Config
 
