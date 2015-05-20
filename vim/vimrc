@@ -82,10 +82,10 @@ let g:CommandTMaxFiles=100000
 let g:CommandTMaxCacheDirectories=50
 set wildignore+=**/.git/*,.DS_Store,**/*.pyc,**/Cloud.build/*,*.obj,*.o
 "Basic vim ninja training
-noremap <up> <nop>
-noremap <down> <nop>
-noremap <left> <nop>
-noremap <right> <nop>
+"noremap <up> <nop>
+"noremap <down> <nop>
+"noremap <left> <nop>
+"noremap <right> <nop>
 
 "Remap window commands
 nmap <leader>s :split<CR>
@@ -193,6 +193,18 @@ function! HighlightSearch()
     return ''
   endif
 endfunction
+"Relative number switching.
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set number
+  else
+    set relativenumber
+  endif
+endfunc
+
+nnoremap <C-n> :call NumberToggle()<cr>  
+autocmd InsertEnter * :set number
+autocmd InsertLeave * :set relativenumber
 
 "hi User1 ctermfg=#ffdad8  ctermbg=#880c0e
 "hi User2 ctermfg=#000000  ctermbg=#F4905C
