@@ -81,5 +81,6 @@ return {
         cmd= {'clangd', 'background-index', '--header-insertion=never'},
         filetypes = {'c', 'cpp', 'objc'},
     }
+    lspconfig.gopls.setup({})
   end,
 }

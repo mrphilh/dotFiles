@@ -48,6 +48,7 @@ return {
         "scala",
         "ssh_config",
         "sql",
+        "svelte",
         "terraform",
         "toml",
         "vim",
