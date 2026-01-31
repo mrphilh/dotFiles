@@ -9,16 +9,15 @@ return {
       -- follow latest release.
       version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
       -- install jsregexp (optional!).
-      build = "make install_jsregexp",
+      build = "make install_jsregexp CC=gcc",
     },
-    "saadparwaiz1/cmp_luasnip", -- for autocompletion
+    -- TODO: What is this dependency
+    -- "saadparwaiz1/cmp_luasnip", -- for autocompletion
     "rafamadriz/friendly-snippets", -- useful snippets
     "onsails/lspkind.nvim", -- vs-code like pictograms
   },
   config = function()
     local cmp = require("cmp")
-
-    local luasnip = require("luasnip")
 
     local lspkind = require("lspkind")
 

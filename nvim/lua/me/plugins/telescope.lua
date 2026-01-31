@@ -1,9 +1,11 @@
+local vars = require('variables')
+
 return {
 	"nvim-telescope/telescope.nvim",
 	branch = "0.1.x",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
-		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+		{ "nvim-telescope/telescope-fzf-native.nvim", build = vars.MAKE_BIN },
 		"nvim-tree/nvim-web-devicons",
 		"folke/todo-comments.nvim",
 	},
