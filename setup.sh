@@ -1,24 +1,35 @@
-# Install system dependecies
-sudo pacman -S --noconfirm tmux waybar
-# Install Dependencies for neovim
-sudo pacman -S  --noconfirm neovim make fzf
+PLATFORM=$(uname -s)
 
-# hypraland configs
-echo -n "Linking HYPERLAND config: "
-if [ ! -f ${HOME}/.config/hypr/hyprland.conf ]; then
-    ln -s $(pwd)/hypr ${HOME}/.config/
-    echo "DONE"
-else
-    echo "SKIPPED"
+# 
+if [ "$PLATFORM" = "Linux" ]; then
+    #
+    # Install system dependecies
+    sudo pacman -S --noconfirm tmux waybar
+    # Install Dependencies for neovim
+    sudo pacman -S  --noconfirm neovim make fzf
+
+    # hypraland configs
+    echo -n "Linking HYPERLAND config: "
+    if [ ! -f ${HOME}/.config/hypr/hyprland.conf ]; then
+        ln -s $(pwd)/hypr ${HOME}/.config/
+        echo "DONE"
+    else
+        echo "SKIPPED"
+    fi
+    # Setup Waybar
+    echo -n "Linking WAYBAR config: "
+    if [ ! -d "${HOME}/.config/waybar" ]; then
+        ln -s $(pwd)/waybar ${HOME}/.config/
+        echo "DONE"
+    else
+        echo "SKIPPED"
+    fi
 fi
-# Setup Waybar
-echo -n "Linking WAYBAR config: "
-if [ ! -d "${HOME}/.config/waybar" ]; then
-    ln -s $(pwd)/waybar ${HOME}/.config/
-    echo "DONE"
-else
-    echo "SKIPPED"
+
+if [ ! -d "${HOME}/.config" ]; then
+    mkdir -p ${HOME}/.config
 fi
+
 # Setup ZSH configs
 echo "Linking ZSH config: "
 for ZSH_FILE in ${HOME}/repos/dotFiles/zsh/* ; do
@@ -45,7 +56,7 @@ fi
 echo -n "Linking TMUX config: "
 if [ ! -f ${HOME}/.tmux.conf ]; then
     ln -s $(pwd)/tmux.conf ${HOME}/.tmux.conf
-    ln -s $(pwd)/tmux ${HOME}/.config/
+    ln -s $(pwd)/tmux ${HOME}/.config
     echo "DONE"
 else
     echo "SKIPPED"
@@ -53,7 +64,7 @@ fi
 # Neovim configs
 echo -n "Linking NEOVIM config: "
 if [ ! -f ${HOME}/.config/nvim/init.lua ]; then
-    ln -s $(pwd)/nvim ${HOME}/.config/
+    ln -s $(pwd)/nvim ${HOME}/.config
     echo "DONE"
 else
     echo "SKIPPED"
