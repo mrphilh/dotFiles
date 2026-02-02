@@ -69,7 +69,7 @@ local plugins = {
     { "nvim-tree/nvim-web-devicons" }, -- icons used by many plugins
     { "folke/tokyonight.nvim" },
     { "nvim-lualine/lualine.nvim"}, -- status line 
---	{ "tpope/vim-fugitive" }, -- git 
+	{ "tpope/vim-fugitive" }, -- git 
     { "nvim-telescope/telescope.nvim" }, -- fuzzy find
     { "nvim-telescope/telescope-fzf-native.nvim", build = vars.MAKE_BIN }, -- fzf backed fuzzy find
     { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
