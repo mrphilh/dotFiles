@@ -126,12 +126,18 @@ require("nvim-treesitter.config").setup({
 require("mason").setup()
 require("mason-lspconfig").setup({
     ensure_installed = {
+        "ansiblels",
         "basedpyright",
+        "bashls",
+        "docker_language_server",
         "eslint",
         "gopls",
+        "lua_ls",
         "ruff",
 --      If FreeBSD rust analyzer must be installed manually
 --      "rust_analyzer",
+        "svelte",
+        "yamlls",
     },
 })
 require("conform").setup({
