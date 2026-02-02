@@ -1,4 +1,13 @@
 ----------------------------------------------
+--- System parameters
+----------------------------------------------
+
+local platform = vim.loop.os_uname().sysname
+
+local vars = {
+    MAKE_BIN = (platform == "FreeBSD" and {"gmake"} or {"make"})[1]
+}
+----------------------------------------------
 --- Basic settings
 ----------------------------------------------
 
@@ -62,7 +71,7 @@ local plugins = {
     { "nvim-lualine/lualine.nvim"}, -- status line 
 --	{ "tpope/vim-fugitive" }, -- git 
     { "nvim-telescope/telescope.nvim" }, -- fuzzy find
-    { "nvim-telescope/telescope-fzf-native.nvim", build = MAKE_BIN }, -- fzf backed fuzzy find
+    { "nvim-telescope/telescope-fzf-native.nvim", build = vars.MAKE_BIN }, -- fzf backed fuzzy find
     { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
     { "mason-org/mason.nvim" }, -- LS manager
     { "neovim/nvim-lspconfig" }, -- general LSP config
