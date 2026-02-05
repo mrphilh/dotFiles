@@ -68,6 +68,7 @@ local plugins = {
     { "nvim-lua/plenary.nvim" }, -- general Lua functions used by other plugins
     { "nvim-tree/nvim-web-devicons" }, -- icons used by many plugins
     { "folke/tokyonight.nvim" },
+    { "atelierbram/Base4Tone-nvim" },
     { "nvim-lualine/lualine.nvim"}, -- status line 
 	{ "tpope/vim-fugitive" }, -- git 
     { "nvim-telescope/telescope.nvim" }, -- fuzzy find
@@ -169,7 +170,8 @@ require("which-key").setup({
 ----------------------------------------------
 --- Colorscheme
 ----------------------------------------------
-vim.cmd.colorscheme("tokyonight")		
+-- vim.cmd.colorscheme("tokyonight")		
+vim.cmd.colorscheme("base4tone_modern_w_dark")
 
 ----------------------------------------------
 --- LSP Config
@@ -208,14 +210,14 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 -- chmod currnet file to be executable
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+--vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Trouble Plugin Keymaps
-vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<CR>", { desc = "Open/close trouble list" } )
-vim.keymap.set("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<CR>", { desc = "Open trouble workspace diagnostics" } )
-vim.keymap.set("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<CR>", { desc = "Open trouble document diagnostics" } )
-vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<CR>", { desc = "Open trouble quickfix list" } )
-vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<CR>", { desc = "Open trouble location list" } )
+vim.keymap.set("n", "<leader>xx", "<cmd>Trouble<CR>", { desc = "Open/close trouble list" } )
+vim.keymap.set("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<CR>", { desc = "Open trouble workspace diagnostics" } )
+vim.keymap.set("n", "<leader>xd", "<cmd>Trouble document_diagnostics<CR>", { desc = "Open trouble document diagnostics" } )
+vim.keymap.set("n", "<leader>xq", "<cmd>Trouble quickfix<CR>", { desc = "Open trouble quickfix list" } )
+vim.keymap.set("n", "<leader>xl", "<cmd>Trouble loclist<CR>", { desc = "Open trouble location list" } )
 vim.keymap.set("n", "<leader>xt", "<cmd>TodoTrouble<CR>", { desc = "Open todos in trouble" } )
 
 -- Telescope Plugin Keymaps
