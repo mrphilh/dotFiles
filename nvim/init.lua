@@ -84,8 +84,16 @@ local plugins = {
         opts_extend = { "sources.default" }
     },
     { "folke/todo-comments.nvim" },
-    { "folke/trouble.nvim" }, 
-    { "folke/which-key.nvim"},
+    { "folke/trouble.nvim" },
+    { "folke/which-key.nvim" },
+    { 
+        "samharju/yeet.nvim",
+        dependencies = {
+            "stevearc/dressing.nvim"
+        },
+        version = "*",
+        cmd = "Yeet",
+    },
 
 }
 
@@ -132,8 +140,6 @@ require("mason-lspconfig").setup({
         "bashls",
         "docker_language_server",
         "eslint",
-        "gopls",
-        "lua_ls",
         "ruff",
 --      If FreeBSD rust analyzer must be installed manually
 --      "rust_analyzer",
@@ -176,6 +182,12 @@ vim.cmd.colorscheme("base4tone_modern_w_dark")
 ----------------------------------------------
 --- LSP Config
 ----------------------------------------------
+vim.lsp.enable("ansiblels")
+vim.lsp.enable("basedpyright")
+vim.lsp.enable("bashls")
+vim.lsp.enable("docker_language_server")
+vim.lsp.enable("eslint")
+vim.lsp.enable("ruff")
 
 vim.lsp.config("rust_analyzer", {
     settings = {
@@ -187,6 +199,8 @@ vim.lsp.config("rust_analyzer", {
     },
 })
 vim.lsp.enable("rust_analyzer")
+vim.lsp.enable("svelte")
+vim.lsp.enable("yamlls")
 
 
 ----------------------------------------------
@@ -198,7 +212,6 @@ vim.keymap.set("n", "<leader>o", vim.cmd.Ex, { desc = "Open file explorer" })
 
 -- Colapse line belon onto the currnet line separated by a space, while keeping
 --  the cursor inplace
---
 vim.keymap.set("n", "J", "mzJ`z")
 
 -- Page (u)p/(d)own but keep the cirspr in the middle of the screen
@@ -210,15 +223,21 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 -- chmod currnet file to be executable
---vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+-- vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Trouble Plugin Keymaps
-vim.keymap.set("n", "<leader>xx", "<cmd>Trouble<CR>", { desc = "Open/close trouble list" } )
-vim.keymap.set("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<CR>", { desc = "Open trouble workspace diagnostics" } )
-vim.keymap.set("n", "<leader>xd", "<cmd>Trouble document_diagnostics<CR>", { desc = "Open trouble document diagnostics" } )
-vim.keymap.set("n", "<leader>xq", "<cmd>Trouble quickfix<CR>", { desc = "Open trouble quickfix list" } )
-vim.keymap.set("n", "<leader>xl", "<cmd>Trouble loclist<CR>", { desc = "Open trouble location list" } )
-vim.keymap.set("n", "<leader>xt", "<cmd>TodoTrouble<CR>", { desc = "Open todos in trouble" } )
+--vim.keymap.set("n", "<leader>xx", "", { desc = "Open/close trouble list" } )
+--vim.keymap.set("n", "<leader>xw", "", { desc = "Open trouble workspace diagnostics" } )
+--vim.keymap.set("n", "<leader>xd", "", { desc = "Open trouble document diagnostics" } )
+--vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<CR>", { desc = "Open trouble quickfix list" } )
+--vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<CR>", { desc = "Open trouble location list" } )
+--vim.keymap.set("n", "<leader>xt", "<cmd>TodoTrouble<CR>", { desc = "Open todos in trouble" } )
+vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)"})
+vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", {desc = "Buffer Diagnostics (Trouble)"})
+vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", {desc = "Symbols (Trouble)"})
+vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", {desc = "LSP Definitions / references / ... (Trouble)"})
+vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", {desc = "Location List (Trouble)"})
+vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", {desc = "Quickfix List (Trouble)"})
 
 -- Telescope Plugin Keymaps
 vim.keymap.set("n", "<leader>pf", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
