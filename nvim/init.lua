@@ -60,6 +60,10 @@ vim.opt.titlestring = "nvim"
 
 -- lsp
 vim.lsp.inlay_hint.enable(true)
+vim.diagnostic.config({ virtual_text = true })
+
+-- Enable copy/paste from outside of nvim
+vim.api.nvim_set_option("clipboard", "unnamed")
 
 ----------------------------------------------
 --- Plugins
@@ -71,6 +75,7 @@ local plugins = {
     { "atelierbram/Base4Tone-nvim" },
     { "nvim-lualine/lualine.nvim"}, -- status line 
 	{ "tpope/vim-fugitive" }, -- git 
+	{ "lewis6991/gitsigns.nvim" }, -- git 
     { "nvim-telescope/telescope.nvim" }, -- fuzzy find
     { "nvim-telescope/telescope-fzf-native.nvim", build = vars.MAKE_BIN }, -- fzf backed fuzzy find
     { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
@@ -87,7 +92,7 @@ local plugins = {
     { "folke/trouble.nvim" },
     { "artemave/workspace-diagnostics.nvim" },
     { "folke/which-key.nvim" },
-    { 
+    {
         "samharju/yeet.nvim",
         dependencies = {
             "stevearc/dressing.nvim"
@@ -121,6 +126,73 @@ require("lazy").setup(plugins)
 ----------------------------------------------
 require("lualine").setup()
 --require("vim-fugitive").setup()
+require("gitsigns").setup {
+    sign_priority = 1,
+    on_attach = function(bufnr)
+        local gitsigns = require('gitsigns')
+
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then
+            vim.cmd.normal({']c', bang = true})
+          else
+            gitsigns.nav_hunk('next')
+          end
+        end)
+
+        map('n', '[c', function()
+          if vim.wo.diff then
+            vim.cmd.normal({'[c', bang = true})
+          else
+            gitsigns.nav_hunk('prev')
+          end
+        end)
+
+        -- Actions
+        map('n', '<leader>gb', gitsigns.blame)
+        map('n', '<leader>hs', gitsigns.stage_hunk)
+        map('n', '<leader>hr', gitsigns.reset_hunk)
+
+        map('v', '<leader>hs', function()
+          gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+        end)
+
+        map('v', '<leader>hr', function()
+          gitsigns.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+        end)
+
+        map('n', '<leader>hS', gitsigns.stage_buffer)
+        map('n', '<leader>hR', gitsigns.reset_buffer)
+        map('n', '<leader>hp', gitsigns.preview_hunk)
+        map('n', '<leader>hi', gitsigns.preview_hunk_inline)
+
+        map('n', '<leader>hb', function()
+          gitsigns.blame_line({ full = true })
+        end)
+
+        map('n', '<leader>hd', gitsigns.diffthis)
+
+        map('n', '<leader>hD', function()
+          gitsigns.diffthis('~')
+        end)
+
+        map('n', '<leader>hQ', function() gitsigns.setqflist('all') end)
+        map('n', '<leader>hq', gitsigns.setqflist)
+
+        -- Toggles
+        map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
+        map('n', '<leader>tw', gitsigns.toggle_word_diff)
+
+        -- Text object
+        map({'o', 'x'}, 'ih', gitsigns.select_hunk)
+    end
+}
 require("telescope").setup()
 require("nvim-treesitter.config").setup({
     ensure_installed = {
@@ -238,12 +310,6 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Trouble Plugin Keymaps
---vim.keymap.set("n", "<leader>xx", "", { desc = "Open/close trouble list" } )
---vim.keymap.set("n", "<leader>xw", "", { desc = "Open trouble workspace diagnostics" } )
---vim.keymap.set("n", "<leader>xd", "", { desc = "Open trouble document diagnostics" } )
---vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<CR>", { desc = "Open trouble quickfix list" } )
---vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<CR>", { desc = "Open trouble location list" } )
---vim.keymap.set("n", "<leader>xt", "<cmd>TodoTrouble<CR>", { desc = "Open todos in trouble" } )
 vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)"})
 vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", {desc = "Buffer Diagnostics (Trouble)"})
 vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", {desc = "Symbols (Trouble)"})
@@ -251,6 +317,13 @@ vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.posit
 vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", {desc = "Location List (Trouble)"})
 vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", {desc = "Quickfix List (Trouble)"})
 
+-- toggle inline diagnostics
+vim.api.nvim_set_keymap("n", "<C-e>", "", {
+    noremap = true,
+    callback = function()
+        vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+    end
+})
 -- Workspace Diagnostics
 vim.api.nvim_set_keymap("n", "<leader>xW", "", {
     noremap = true,
