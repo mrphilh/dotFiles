@@ -85,6 +85,7 @@ local plugins = {
     },
     { "folke/todo-comments.nvim" },
     { "folke/trouble.nvim" },
+    { "artemave/workspace-diagnostics.nvim" },
     { "folke/which-key.nvim" },
     { 
         "samharju/yeet.nvim",
@@ -157,13 +158,24 @@ require("conform").setup({
         css        = { "prettier", stop_after_first = true },
     },
 })
-require("blink.cmp").setup(
-    {
-        build = "cargo +nightly-2025-09-30 build --release",
-    }
-)
+require("blink.cmp").setup({
+    build = "cargo +nightly-2025-09-30 build --release",
+    keymap = {
+    -- start with the defaults
+    preset = "default",
+
+    ["<C-k>"]     = { "select_prev", "fallback" },                  -- previous suggestion
+    ["<C-j>"]     = { "select_next", "fallback" },                  -- next suggestion
+    ["<C-b>"]     = { "scroll_documentation_up", "fallback" }, 
+    ["<C-f>"]     = { "scroll_documentation_down", "fallback" },
+    ["<C-Space>"] = { "show", "fallback" },                         -- show completion suggestions
+    ["<C-e>"]     = { "hide", "fallback" },                         -- close completion window
+    ["<CR>"]      = { "accept", "fallback" },
+    },
+})
 require("todo-comments").setup()
 require("trouble").setup()
+require("workspace-diagnostics").setup()
 require("which-key").setup({
     event = "VeryLazy",
     init = function()
@@ -177,7 +189,7 @@ require("which-key").setup({
 --- Colorscheme
 ----------------------------------------------
 -- vim.cmd.colorscheme("tokyonight")		
-vim.cmd.colorscheme("base4tone_modern_w_dark")
+vim.cmd.colorscheme("base4tone_modern_n_dark")
 
 ----------------------------------------------
 --- LSP Config
@@ -238,6 +250,17 @@ vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>",
 vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", {desc = "LSP Definitions / references / ... (Trouble)"})
 vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", {desc = "Location List (Trouble)"})
 vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", {desc = "Quickfix List (Trouble)"})
+
+-- Workspace Diagnostics
+vim.api.nvim_set_keymap("n", "<leader>xW", "", {
+    noremap = true,
+    callback = function()
+        for _, client in ipairs(vim.lsp.get_clients()) do
+            require("workspace-diagnostics").populate_workspace_diagnostics(client, 0)
+        end
+    end
+})
+
 
 -- Telescope Plugin Keymaps
 vim.keymap.set("n", "<leader>pf", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
