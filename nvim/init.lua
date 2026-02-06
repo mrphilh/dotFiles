@@ -60,6 +60,10 @@ vim.opt.titlestring = "nvim"
 
 -- lsp
 vim.lsp.inlay_hint.enable(true)
+vim.diagnostic.config({ virtual_text = true })
+
+-- Enable copy/paste from outside of nvim
+vim.api.nvim_set_option("clipboard", "unnamed")
 
 ----------------------------------------------
 --- Plugins
@@ -68,8 +72,10 @@ local plugins = {
     { "nvim-lua/plenary.nvim" }, -- general Lua functions used by other plugins
     { "nvim-tree/nvim-web-devicons" }, -- icons used by many plugins
     { "folke/tokyonight.nvim" },
+    { "atelierbram/Base4Tone-nvim" },
     { "nvim-lualine/lualine.nvim"}, -- status line 
 	{ "tpope/vim-fugitive" }, -- git 
+	{ "lewis6991/gitsigns.nvim" }, -- git 
     { "nvim-telescope/telescope.nvim" }, -- fuzzy find
     { "nvim-telescope/telescope-fzf-native.nvim", build = vars.MAKE_BIN }, -- fzf backed fuzzy find
     { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
@@ -83,8 +89,17 @@ local plugins = {
         opts_extend = { "sources.default" }
     },
     { "folke/todo-comments.nvim" },
-    { "folke/trouble.nvim" }, 
-    { "folke/which-key.nvim"},
+    { "folke/trouble.nvim" },
+    { "artemave/workspace-diagnostics.nvim" },
+    { "folke/which-key.nvim" },
+    {
+        "samharju/yeet.nvim",
+        dependencies = {
+            "stevearc/dressing.nvim"
+        },
+        version = "*",
+        cmd = "Yeet",
+    },
 
 }
 
@@ -111,6 +126,73 @@ require("lazy").setup(plugins)
 ----------------------------------------------
 require("lualine").setup()
 --require("vim-fugitive").setup()
+require("gitsigns").setup {
+    sign_priority = 1,
+    on_attach = function(bufnr)
+        local gitsigns = require('gitsigns')
+
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then
+            vim.cmd.normal({']c', bang = true})
+          else
+            gitsigns.nav_hunk('next')
+          end
+        end)
+
+        map('n', '[c', function()
+          if vim.wo.diff then
+            vim.cmd.normal({'[c', bang = true})
+          else
+            gitsigns.nav_hunk('prev')
+          end
+        end)
+
+        -- Actions
+        map('n', '<leader>gb', gitsigns.blame)
+        map('n', '<leader>hs', gitsigns.stage_hunk)
+        map('n', '<leader>hr', gitsigns.reset_hunk)
+
+        map('v', '<leader>hs', function()
+          gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+        end)
+
+        map('v', '<leader>hr', function()
+          gitsigns.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+        end)
+
+        map('n', '<leader>hS', gitsigns.stage_buffer)
+        map('n', '<leader>hR', gitsigns.reset_buffer)
+        map('n', '<leader>hp', gitsigns.preview_hunk)
+        map('n', '<leader>hi', gitsigns.preview_hunk_inline)
+
+        map('n', '<leader>hb', function()
+          gitsigns.blame_line({ full = true })
+        end)
+
+        map('n', '<leader>hd', gitsigns.diffthis)
+
+        map('n', '<leader>hD', function()
+          gitsigns.diffthis('~')
+        end)
+
+        map('n', '<leader>hQ', function() gitsigns.setqflist('all') end)
+        map('n', '<leader>hq', gitsigns.setqflist)
+
+        -- Toggles
+        map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
+        map('n', '<leader>tw', gitsigns.toggle_word_diff)
+
+        -- Text object
+        map({'o', 'x'}, 'ih', gitsigns.select_hunk)
+    end
+}
 require("telescope").setup()
 require("nvim-treesitter.config").setup({
     ensure_installed = {
@@ -131,8 +213,6 @@ require("mason-lspconfig").setup({
         "bashls",
         "docker_language_server",
         "eslint",
-        "gopls",
-        "lua_ls",
         "ruff",
 --      If FreeBSD rust analyzer must be installed manually
 --      "rust_analyzer",
@@ -150,13 +230,24 @@ require("conform").setup({
         css        = { "prettier", stop_after_first = true },
     },
 })
-require("blink.cmp").setup(
-    {
-        build = "cargo +nightly-2025-09-30 build --release",
-    }
-)
+require("blink.cmp").setup({
+    build = "cargo +nightly-2025-09-30 build --release",
+    keymap = {
+    -- start with the defaults
+    preset = "default",
+
+    ["<C-k>"]     = { "select_prev", "fallback" },                  -- previous suggestion
+    ["<C-j>"]     = { "select_next", "fallback" },                  -- next suggestion
+    ["<C-b>"]     = { "scroll_documentation_up", "fallback" }, 
+    ["<C-f>"]     = { "scroll_documentation_down", "fallback" },
+    ["<C-Space>"] = { "show", "fallback" },                         -- show completion suggestions
+    ["<C-e>"]     = { "hide", "fallback" },                         -- close completion window
+    ["<CR>"]      = { "accept", "fallback" },
+    },
+})
 require("todo-comments").setup()
 require("trouble").setup()
+require("workspace-diagnostics").setup()
 require("which-key").setup({
     event = "VeryLazy",
     init = function()
@@ -169,11 +260,18 @@ require("which-key").setup({
 ----------------------------------------------
 --- Colorscheme
 ----------------------------------------------
-vim.cmd.colorscheme("tokyonight")		
+-- vim.cmd.colorscheme("tokyonight")		
+vim.cmd.colorscheme("base4tone_modern_n_dark")
 
 ----------------------------------------------
 --- LSP Config
 ----------------------------------------------
+vim.lsp.enable("ansiblels")
+vim.lsp.enable("basedpyright")
+vim.lsp.enable("bashls")
+vim.lsp.enable("docker_language_server")
+vim.lsp.enable("eslint")
+vim.lsp.enable("ruff")
 
 vim.lsp.config("rust_analyzer", {
     settings = {
@@ -185,6 +283,8 @@ vim.lsp.config("rust_analyzer", {
     },
 })
 vim.lsp.enable("rust_analyzer")
+vim.lsp.enable("svelte")
+vim.lsp.enable("yamlls")
 
 
 ----------------------------------------------
@@ -196,7 +296,6 @@ vim.keymap.set("n", "<leader>o", vim.cmd.Ex, { desc = "Open file explorer" })
 
 -- Colapse line belon onto the currnet line separated by a space, while keeping
 --  the cursor inplace
---
 vim.keymap.set("n", "J", "mzJ`z")
 
 -- Page (u)p/(d)own but keep the cirspr in the middle of the screen
@@ -208,15 +307,33 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 -- chmod currnet file to be executable
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+-- vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Trouble Plugin Keymaps
-vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<CR>", { desc = "Open/close trouble list" } )
-vim.keymap.set("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<CR>", { desc = "Open trouble workspace diagnostics" } )
-vim.keymap.set("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<CR>", { desc = "Open trouble document diagnostics" } )
-vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<CR>", { desc = "Open trouble quickfix list" } )
-vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<CR>", { desc = "Open trouble location list" } )
-vim.keymap.set("n", "<leader>xt", "<cmd>TodoTrouble<CR>", { desc = "Open todos in trouble" } )
+vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)"})
+vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", {desc = "Buffer Diagnostics (Trouble)"})
+vim.keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", {desc = "Symbols (Trouble)"})
+vim.keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", {desc = "LSP Definitions / references / ... (Trouble)"})
+vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", {desc = "Location List (Trouble)"})
+vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", {desc = "Quickfix List (Trouble)"})
+
+-- toggle inline diagnostics
+vim.api.nvim_set_keymap("n", "<C-e>", "", {
+    noremap = true,
+    callback = function()
+        vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+    end
+})
+-- Workspace Diagnostics
+vim.api.nvim_set_keymap("n", "<leader>xW", "", {
+    noremap = true,
+    callback = function()
+        for _, client in ipairs(vim.lsp.get_clients()) do
+            require("workspace-diagnostics").populate_workspace_diagnostics(client, 0)
+        end
+    end
+})
+
 
 -- Telescope Plugin Keymaps
 vim.keymap.set("n", "<leader>pf", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
